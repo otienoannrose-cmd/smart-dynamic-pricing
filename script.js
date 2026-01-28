@@ -1,32 +1,24 @@
-console.log("script.js loaded");
+
+document.getElementById("calculateBtn").addEventListener("click", calculatePrice);
+
 function calculatePrice() {
-    var basePrice = Number(document.getElementById("basePrice").value);
-    var competitorPrice = Number(document.getElementById("competitorPrice").value);
-    var demand = document.getElementById("demand").value;
-    var time = document.getElementById("time").value;
+    let basePrice = parseFloat(document.getElementById("basePrice").value);
+    let competitorPrice = parseFloat(document.getElementById("competitorPrice").value);
+    let demand = document.getElementById("demand").value;
+    let time = document.getElementById("time").value;
 
-    if (!basePrice || !competitorPrice) {
-        document.getElementById("output").innerHTML = "Please enter valid numeric values.";
-
-        return;
+    if (isNaN(basePrice) || isNaN(competitorPrice)) {
+        document.getElementById("output").innerText = "Please enter valid prices.";
+        return; // ✅ now legal
     }
 
-    // Demand multiplier
-    var demandMultiplier = demand === "high" ? 1.2 :
-                           demand === "medium" ? 1.1 : 0.95;
+    let finalPrice = basePrice;
 
-    // Time multiplier
-    var timeMultiplier = time === "peak" ? 1.15 : 1.0;
+    if (demand === "high") finalPrice += basePrice * 0.20;
+    if (demand === "medium") finalPrice += basePrice * 0.10;
+    if (time === "peak") finalPrice += basePrice * 0.15;
+    if (competitorPrice < basePrice) finalPrice -= basePrice * 0.05;
 
-    // Competitor influence factor
-    var competitorFactor = 1;
-    if (competitorPrice < basePrice) {
-        competitorFactor = 1 - ((basePrice - competitorPrice) / basePrice) * 0.5;
-    }
-
-    // Final dynamic price
-    var finalPrice = basePrice * demandMultiplier * timeMultiplier * competitorFactor;
-
-    document.getElementById("output").innerHTML =
-        "Final Dynamic Price: KES " + finalPrice.toFixed(2);
+    document.getElementById("output").innerText =
+        "Final Price: KES " + finalPrice.toFixed(2);
 }
